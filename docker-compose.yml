@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  aws-sqs:
+    image: roribio16/alpine-sqs:latest
+    ports:
+      - 9324:9324
+      - 9325:9325
+    stdin_open: true
+    tty: true
+  aws-dynamo:
+    image: instructure/dynamo-local-admin:latest
+    ports:
+      - 8000:8000
+      - 8001:8001
+      - 8002:8002
+  aws-rds:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: example
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+  redis:
+    image: redis:4.0
+    ports:
+      - "6379:6379"
+  redis-commander:
+    image: tenstartups/redis-commander
+    command: --redis-host redis
+    links:
+      - redis:redis
+    ports:
+      - 8081:8081
